@@ -34,6 +34,7 @@ public class JugadorController {
 	
 	@Autowired 
 	private EquipoPropertyEditor equipoPropertyEditor;
+	
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String listarJugadores(Model model) {
@@ -74,6 +75,14 @@ public class JugadorController {
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 			}			
 		}
+	
+	
+	@RequestMapping(method=RequestMethod.GET, value="/detalle/{id}")
+	public String detalleJugador(Model model, @PathVariable Long id){
+		model.addAttribute("jugador", jugadorRepo.findOne(id));
+		return "jugador/detalle";
+		
+	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{id}")
 	@ResponseBody

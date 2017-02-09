@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -37,8 +38,10 @@
 				<td style="width: 5%">#</td>
 				<td style="width: 17%">Nombre</td>
 				<td style="width: 17%">Pais</td>
+				<sec:authorize access="hasRole('ADMIN')">
 				<td style="width: 10%">Editar</td>
 				<td style="width: 10%">Borrar</td>
+				</sec:authorize>
 			</tr>
 		</thead>
 		<tbody>
@@ -47,8 +50,13 @@
 					<td>${federacion.id}</td>
 					<td>${federacion.nombre}</td>
 					<td>${federacion.pais}</td>
-					<td><button type="button" class="btn btn-warning btn-editar">Editar</button></td>
+					<sec:authorize access="hasRole('ADMIN')">
+					<td>
+					<button type="button" class="btn btn-warning btn-editar">Editar</button>
+					</td>
 					<td><button type="button" class="btn btn-danger btn-borrar">Borrar</button></td>
+					</sec:authorize>
+					
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -65,7 +73,7 @@
 			</tr>
 		</tfoot>
 	</table>
-
+<a href="${path}/index" type="button" class="btn btn-default" >Página de Inicio</a>
 	<div class="modal fade" id="modal-federacion" tabindex="-1"
 		role="dialog" aria-hidden="true">
 		<div class="modal-dialog">

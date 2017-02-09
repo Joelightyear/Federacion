@@ -4,6 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+ <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -40,21 +42,28 @@
 				<td style="width: 17%">Goles</td>
 				<td style="width: 17%">Posicion</td>
 				<td style="width: 17%">Equipo</td>
+				<sec:authorize access="hasRole('ADMIN')">
 				<td style="width: 10%">Editar</td>
 				<td style="width: 10%">Borrar</td>
+				</sec:authorize>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach items="${jugadores}" var="jugador">
 				<tr data-id="${jugador.id}">
 					<td>${jugador.id}</td>
-					<td>${jugador.nombre}</td>
+					<td><a href="<c:url value="/jugadores/detalle/${jugador.id}"/>">${jugador.nombre}</a></td>
 					<td>${jugador.edad}</td>
 					<td>${jugador.goles}</td>
 					<td>${jugador.posicion}</td>
-					<td>${jugador.equipo.nombre}</td>
-					<td><button type="button" class="btn btn-warning btn-editar">Editar</button></td>
+					<td>${jugador.equipo.nombre}</td>				
+					<sec:authorize access="hasRole('ADMIN')">
+					<td>
+					<button type="button" class="btn btn-warning btn-editar">Editar</button>
+					</td>
 					<td><button type="button" class="btn btn-danger btn-borrar">Borrar</button></td>
+					</sec:authorize>
+					
 				</tr>
 			</c:forEach>
 		</tbody>
@@ -64,14 +73,18 @@
 					id="cantidad-jugadores">${jugadores.size()}</span></td>
 			</tr>
 			<tr>
+			<sec:authorize access="hasRole('ADMIN')">
 				<td colspan="5">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#modal-jugador">Registrar Jugador</button>
 				</td>
+				</sec:authorize>
 			</tr>
+			
 		</tfoot>
+		
 	</table>
-
+<a href="${path}/index" type="button" class="btn btn-default" >Página de Inicio</a>
 	<div class="modal fade" id="modal-jugador" tabindex="-1"
 		role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
@@ -112,52 +125,11 @@
 						<button id="btn-salvar" type="submit" class="btn btn-primary">Guardar
 							Información</button>
 					</div>
+					
 				</form>
 			</div>
 		</div>
 	</div>
-	
-	<script type="text/javascript">
-	
-	$(document).ready(function(){
-		
-		$('.btn-editar').on('click', function(){
-				var id = $(this).parents('tr').data('id');
-				var url = 'jugadores/'+id;
-				
-				$.get(url)
-					.done(function(jugador){
-						$('#id').val(jugador.id);
-						$('#nombre').val(jugador.nombre);
-						$('#edad').val(jugador.edad);
-						$('#goles').val(jugador.goles);
-						$('#posicion').val(jugador.posicion);
-						$('#form-jugador .modal-title').text("Editando jugadores...")
-						
-						$('#modal-jugador').modal('show');
-					});
-		});
-		
-		
-		
-		$('.btn-borrar').on('click', function(){
-			var id = $(this).parents('tr').data('id');
-			
-			$.ajax({
-				url : "jugadores/"+id,
-				type: 'DELETE',
-			    success: function(result) {
-			    	$('tr[data-id="'+id+'"]').remove();
-					var ingredientes = parseInt( $('#cantidad-jugadores').text() );
-			    	$('#cantidad-jugadores').text(ingredientes - 1);
-			    }
-			});
-			
-		});
-		
-	});
-	
-	</script>
 
 </body>
 </html>
